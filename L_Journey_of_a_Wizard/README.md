@@ -15,8 +15,8 @@
 
 # 制約
 
-- $2 \leq N \leq 10^5$
-- $0 \leq M \leq 2 \times 10^5$
+- $2 \leq N \leq 2 \times 10^4$
+- $0 \leq M \leq 2 \times 10^4$
 - $1 \leq a_i, b_i \leq N$（$1 \leq i \leq M$）
 - $0 \leq c_i \leq 10^5$（$1 \leq i \leq M$）
 - $0 \leq X, Y \leq 10^5$
