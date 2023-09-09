@@ -35,4 +35,61 @@ $i = 1, \ldots, N$ について、
 
 よって、このグラフについて $x_1$ からスタートし、$x_N, y_N, z_N, w_N$ まで移動するときの最短時間をそれぞれダイクストラ法を用いて計算し、そのうち最小のものが答えになります。
 
+```rust
+use proconio::{input, marker::Usize1};
 
+#[derive(Debug, Clone, Copy)]
+struct Edge {
+    to: usize,
+    cost: usize,
+}
+
+fn main() {
+    input! {
+        n: usize,
+        m: usize,
+        x: usize,
+        y: usize,
+        edges: [(Usize1, Usize1, usize); m],
+    }
+
+    let magic2 = |cost| if cost % 2 == 0 { cost / 2 } else { cost * 2 };
+
+    // 頂点 i を 4 * i, 4 * i + 1, 4 * i + 2, 4 * i + 3 として、
+    // それぞれ 魔法を使っていない、魔法1のみ使った、魔法2のみ使った、両方使った ときのグラフを作る
+    let mut graph = vec![vec![]; 4 * n];
+    for &(a, b, c) in &edges {
+        graph[4 * a].push(Edge { to: 4 * b, cost: c });
+        graph[4 * b + 1].push(Edge { to: 4 * a + 1, cost: c });
+        graph[4 * a + 2].push(Edge { to: 4 * b + 2, cost: magic2(c) });
+        graph[4 * b + 3].push(Edge { to: 4 * a + 3, cost: magic2(c) });
+    }
+    // 魔法を使ったときの辺を追加
+    for i in 0..n {
+        graph[4 * i].push(Edge { to: 4 * i + 1, cost: x });
+        graph[4 * i].push(Edge { to: 4 * i + 2, cost: y });
+        graph[4 * i + 1].push(Edge { to: 4 * i + 3, cost: y });
+        graph[4 * i + 2].push(Edge { to: 4 * i + 3, cost: x });
+    }
+
+    // 頂点 0 からDijsktra, 4 * (n - 1), 4 * (n - 1) + 1, 4 * (n - 1) + 2, 4 * (n - 1) + 3 への最短距離のうち最小のものが答え
+    let mut dist = vec![std::usize::MAX; 4 * n];
+    let mut heap = std::collections::BinaryHeap::new();
+    dist[0] = 0;
+    heap.push(std::cmp::Reverse((0, 0)));
+    while let Some(std::cmp::Reverse((cost, v))) = heap.pop() {
+        if dist[v] < cost {
+            continue;
+        }
+        for &Edge { to, cost: c } in &graph[v] {
+            if dist[to] > dist[v] + c {
+                dist[to] = dist[v] + c;
+                heap.push(std::cmp::Reverse((dist[to], to)));
+            }
+        }
+    }
+
+    let ans = *dist[4 * (n - 1)..4 * n].iter().min().unwrap();
+    println!("{}", if ans == std::usize::MAX { -1 } else { ans as i32 });
+}
+```
