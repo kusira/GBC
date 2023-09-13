@@ -35,6 +35,8 @@ $i = 1, \ldots, N$ について、
 
 よって、このグラフについて $x_1$ からスタートし、$x_N, y_N, z_N, w_N$ まで移動するときの最短時間をそれぞれダイクストラ法を用いて計算し、そのうち最小のものが答えになります。
 
+32bit整数で計算するとオーバーフローするケースが存在するので、64bit整数で計算する必要があります。
+
 ```rust
 use proconio::{input, marker::Usize1};
 
@@ -90,6 +92,6 @@ fn main() {
     }
 
     let ans = *dist[4 * (n - 1)..4 * n].iter().min().unwrap();
-    println!("{}", if ans == std::usize::MAX { -1 } else { ans as i32 });
+    println!("{}", if ans == std::usize::MAX { -1 } else { ans as i64 });
 }
 ```
