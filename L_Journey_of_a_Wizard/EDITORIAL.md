@@ -31,9 +31,11 @@ $i = 1, \ldots, N$ について、
 魔法1を使うと、今考えているグラフで $y_i$ にいることに対応します。
 
 つまり、「魔法を一度も使っていない状態で頂点 $i$ にいて、魔法1を使う」は、「$x_i \to y_i$ の重み $X$ の辺を通る」ことに対応します。
-同様のことが $x_i \to z_i, y_i \to z_i, z_i \to w_i$ の辺についても言えます。
+同様のことが $x_i \to z_i, y_i \to w_i, z_i \to w_i$ の辺についても言えます。
 
 よって、このグラフについて $x_1$ からスタートし、$x_N, y_N, z_N, w_N$ まで移動するときの最短時間をそれぞれダイクストラ法を用いて計算し、そのうち最小のものが答えになります。
+
+32bit整数で計算するとオーバーフローするケースが存在するので、64bit整数で計算する必要があります。
 
 ```rust
 use proconio::{input, marker::Usize1};
@@ -90,6 +92,6 @@ fn main() {
     }
 
     let ans = *dist[4 * (n - 1)..4 * n].iter().min().unwrap();
-    println!("{}", if ans == std::usize::MAX { -1 } else { ans as i32 });
+    println!("{}", if ans == std::usize::MAX { -1 } else { ans as i64 });
 }
 ```
